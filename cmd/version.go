@@ -9,7 +9,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// Set the version of the cnvrgctl cli
+// Set the version of the runctl cli
 var Version = "v0.0.1"
 
 // versionCmd represents the version command

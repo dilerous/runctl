@@ -29,7 +29,7 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
-	// Run: func(cmd *cobra.Command, args []string) { },
+	//	Run: func(cmd *cobra.Command, args []string) {},
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -42,18 +42,18 @@ func Execute() {
 }
 
 func init() {
-	// Here you will define your flags and configuration settings.
-	// Cobra supports persistent flags, which, if defined here,
-	// will be global for your application.
-
 	// Persistent flag to define the namespace
 	RootCmd.PersistentFlags().StringP("namespace", "n", "default", "If present, the namespace scope for this CLI request")
 	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.runctl.yaml)")
+
+	// Persistent flag to define the log file name
+	RootCmd.PersistentFlags().StringP("log", "l", "runctl-logs.txt", "Log file name")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	RootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 
+	// Set the logger
 	err := setLogger("")
 	if err != nil {
 		fmt.Println(err)
@@ -66,13 +66,13 @@ func setLogger(p string) error {
 	// Set the log file path
 	var fileName = p
 
-	// If no file name is provided, use the default runctl-logs.txt
+	// if statement to check if a file name was passed
 	if fileName == "" {
 		fileName = "runctl-logs.txt"
 	}
 
 	// Open the log file
-	file, err := os.OpenFile(fileName, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	file, err := os.OpenFile("runctl-logs.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if err != nil {
 		log.Fatal(err)
 		return fmt.Errorf("there was an issue creating the log file. %v", err)
@@ -85,5 +85,7 @@ func setLogger(p string) error {
 	InfoLogger = log.New(file, "INFO: ", log.Ldate|log.Ltime|log.Lshortfile)
 	WarningLogger = log.New(file, "WARNING: ", log.Ldate|log.Ltime|log.Lshortfile)
 	ErrorLogger = log.New(file, "ERROR: ", log.Ldate|log.Ltime|log.Lshortfile)
+
+	// Return nil to indicate success
 	return nil
 }
